@@ -30,6 +30,7 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!");
         <div class="menu-drop">
           <a href="gerenciamento-cliente.php">Gerenciar clientes</a>
           <a href="gerenciamento-produto.php">Gerenciar produtos</a>
+          <a href="gerenciamento-usuario.php">Gerenciar usuarios</a>
           <a href="cadastro-cliente.php">Cadastrar cliente</a>
           <a href="cadastro-usuario.php">Cadastrar usuário</a>
           <a href="cadastro-produto.php">Cadastrar produto</a>
@@ -42,7 +43,7 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!");
   <section class="page-cadastro-usuario paddingBottom50">
     <div class="container">
       <div>
-        <a href="index.html" class="link-voltar">
+        <a href="cadastro-usuario.php" class="link-voltar">
           <img src="assets/images/arrow.svg" alt="">
           <span>Cadastro de usuário</span>
         </a>

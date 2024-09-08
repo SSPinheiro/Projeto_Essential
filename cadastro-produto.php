@@ -34,6 +34,7 @@ if(!isset($_SESSION['id_usuario'])){
         <div class="menu-drop">
         <a href="gerenciamento-cliente.php">Gerenciar clientes</a>
           <a href="gerenciamento-produto.php">Gerenciar produtos</a>
+          <a href="gerenciamento-usuario.php">Gerenciar usuarios</a>
           <a href="cadastro-cliente.php">Cadastrar cliente</a>
           <a href="cadastro-usuario.php">Cadastrar usuário</a>
           <a href="cadastro-produto.php">Cadastrar produto</a>
@@ -46,7 +47,7 @@ if(!isset($_SESSION['id_usuario'])){
   <section class="page-cadastro-produto paddingBottom50">
     <div class="container">
       <div>
-        <a href="gerenciamento-produto.html" class="link-voltar">
+        <a href="cadastro-produto.php" class="link-voltar">
           <img src="assets/images/arrow.svg" alt="">
           <span>Cadastro de produto</span>
         </a>

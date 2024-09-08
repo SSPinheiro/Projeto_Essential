@@ -34,6 +34,7 @@ if(!isset($_SESSION['id_usuario'])){
         <div class="menu-drop">
         <a href="gerenciamento-cliente.php">Gerenciar clientes</a>
           <a href="gerenciamento-produto.php">Gerenciar produtos</a>
+          <a href="gerenciamento-usuario.php">Gerenciar usuarios</a>
           <a href="cadastro-cliente.php">Cadastrar cliente</a>
           <a href="cadastro-usuario.php">Cadastrar usuário</a>
           <a href="cadastro-produto.php">Cadastrar produto</a>
@@ -55,7 +56,7 @@ if(!isset($_SESSION['id_usuario'])){
             </div>
             <img src="assets/images/icon-users.svg" alt="">
           </div>
-          <a href="gerenciamento-cliente.html" class="bt-index">Gerenciar clientes</a>
+          <a href="gerenciamento-cliente.php" class="bt-index">Gerenciar clientes</a>
         </div>
         <div class="blc">
           <div class="d-flex justify-content-between">
@@ -65,7 +66,7 @@ if(!isset($_SESSION['id_usuario'])){
             </div>
             <img src="assets/images/icon-product.svg" style="max-width: 76px;" alt="">
           </div>
-          <a href="gerenciamento-produto.html" class="bt-index">Gerenciar produto</a>
+          <a href="gerenciamento-produto.php" class="bt-index">Gerenciar produto</a>
         </div>
         <div class="blc">
           <div class="d-flex justify-content-between">
@@ -75,7 +76,7 @@ if(!isset($_SESSION['id_usuario'])){
             </div>
             <img src="assets/images/icon-pedido.svg" alt="">
           </div>
-          <a href="novo-pedido.html" class="bt-index">Novo pedido</a>
+          <a href="novo-pedido.php" class="bt-index">Novo pedido</a>
         </div>
       </div>
     </div>
