@@ -1,8 +1,8 @@
 <?php 
 session_start();
 if(!isset($_SESSION['id_usuario'])){
-  header("location: login.php");
-  exit;
+  header('location: login.php');
+  exit();
 }
 ?>
 <!DOCTYPE html>
@@ -37,7 +37,7 @@ if(!isset($_SESSION['id_usuario'])){
           <a href="cadastro-usuario.php">Cadastrar usuário</a>
           <a href="cadastro-produto.php">Cadastrar produto</a>
           <a href="novo-pedido.php">Novo pedido</a>
-          <a href="#">Sair da conta</a>
+          <a href="logout.php">Sair da conta</a>
         </div>
       </div>
     </div>
