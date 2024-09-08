@@ -10,7 +10,7 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!")
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link rel="stylesheet" href="./assets/css/reset.css">
-  <link rel="stylesheet" href="./assets/css/styles.css">
+  <link rel="stylesheet" href="./assets/css/login.css">
   <link rel="stylesheet" href="https://use.typekit.net/tvf0cut.css">
 </head>
 
@@ -29,10 +29,6 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!")
         <p class="login-title">
           Login
         </p>
-        <p class="login-text">
-          Caso seja admin, entre com o seu login de cliente da <a href="https://essentia.com.br/"
-            target="_blank">Essentia Pharma.</a>
-        </p>
       </div>
       <div class="login container-small">
         <form method="post" id="form-input-login">
@@ -47,6 +43,7 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!")
             </div>
           </div>
           <button type="submit" name="envio" class="button-default">Continuar</button>
+          <div class="novo-usuario"><p>Precisa de uma conta? <a href="cadastro-usuario.php">Registre-se</a></p></div>
         </form>
       </div>
     </div>

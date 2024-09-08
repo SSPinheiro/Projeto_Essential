@@ -1,11 +1,6 @@
 <?php
 require_once 'classes/usuario.php';
 $u = new Usuario("essentia", "localhost", "root", "Unida010!");
-session_start();
-if(!isset($_SESSION['id_usuario'])){
-  header('location: login.php');
-  exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
