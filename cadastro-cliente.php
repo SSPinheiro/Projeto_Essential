@@ -4,6 +4,8 @@ if(!isset($_SESSION['id_usuario'])){
   header('location: login.php');
   exit();
 } 
+require_once('classes/cliente.php');
+$u = new Cliente("essentia", "localhost", "root", "Unida010!");
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -56,26 +58,51 @@ if(!isset($_SESSION['id_usuario'])){
           <div class="bloco-inputs">
             <div>
               <label class="input-label">Nome</label>
-              <input type="text" class="nome-input" name="nome">
+              <input type="text" class="nome-input" name="nome" required maxlength="255">
             </div>
             <div>
               <label class="input-label">E-mail</label>
-              <input type="text" class="email-input" name="email">
+              <input type="text" class="email-input" name="email" required maxlength="255">
             </div>
             <div>
               <label class="input-label">CPF</label>
-              <input type="text" class="cpf-input" name="cpf">
+              <input type="text" class="cpf-input" name="cpf" required maxlength="11">
             </div>
             <div>
               <label class="input-label">Telefone</label>
-              <input type="tel" class="telefone-input" name="telefone">
+              <input type="tel" class="telefone-input" name="telefone" required maxlength="15">
             </div>
           </div>
-          <button type="submit" class="button-default">Salvar novo cliente</button>
+          <button type="submit" class="button-default" name="envio">Salvar novo cliente</button>
         </form>
       </div>
     </div>
   </section>
+  <?php
+
+  if(isset($_POST['envio'])) {
+    $nome = addslashes($_POST['nome']);
+    $email = addslashes($_POST['email']);
+    $cpf = addslashes($_POST['cpf']);
+    $telefone = addslashes($_POST['telefone']);
+
+    if (!empty($nome) && !empty($email) && !empty($cpf) && !empty($telefone)) {
+      if ($u->msgErro == "") {
+        if ($u->cadastrar($nome, $email, $cpf, $telefone)) {
+          echo "cadastrado com sucesso!";
+        } else {
+          echo "email ja cadastrado!";
+        }
+      } else {
+        echo "Erro: " . $u->msgErro;
+      }
+    } else {
+      echo "Preencha Todos os campos!";
+    }
+  }
+
+  ?>
+</body>
 </body>
 
 </html>
