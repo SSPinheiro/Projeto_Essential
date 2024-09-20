@@ -1,9 +1,11 @@
-<?php 
+<?php
 session_start();
-if(!isset($_SESSION['id_usuario'])){
+if (!isset($_SESSION['id_usuario'])) {
   header('location: login.php');
   exit();
 }
+require_once 'classes/cliente.php';
+$c = new cliente("essentia", "localhost", "root", "Unida010!");
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -31,7 +33,7 @@ if(!isset($_SESSION['id_usuario'])){
         </span>
         <img src="assets/images/arrow-down.svg" alt="" />
         <div class="menu-drop">
-        <a href="gerenciamento-cliente.php">Gerenciar clientes</a>
+          <a href="gerenciamento-cliente.php">Gerenciar clientes</a>
           <a href="gerenciamento-produto.php">Gerenciar produtos</a>
           <a href="gerenciamento-usuario.php">Gerenciar usuarios</a>
           <a href="cadastro-cliente.php">Cadastrar cliente</a>
@@ -56,33 +58,50 @@ if(!isset($_SESSION['id_usuario'])){
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>CPF</th>
-              <th>E-mail</th>
-              <th>Telefone</th>
+              <th >ID</th>
+              <th >Nome</th>
+              <th >CPF</th>
+              <th >E-mail</th>
+              <th >Telefone</th>
+              <th >Botões</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Nome Sobrenome</td>
-              <td>111.333.555-77</td>
-              <td>nome.sobrenome@essentialnutrition.com.br</td>
-              <td>(48) 99999-9999</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Nome Sobrenome</td>
-              <td>111.333.555-77</td>
-              <td>nome.sobrenome@essentialnutrition.com.br</td>
-              <td>(48) 99999-9999</td>
-            </tr>
+            <?php
+            $dados = $c->buscarDados();
+            if (count($dados) > 0) {
+              foreach ($dados as $cliente) {
+                echo "<tr>";
+                echo "<td>" . $cliente['id_cliente'] . "</td>";
+                echo "<td>" . $cliente['nome'] . "</td>";
+                echo "<td>" . $cliente['cpf'] . "</td>";
+                echo "<td>" . $cliente['email'] . "</td>";
+                echo "<td>" . $cliente['telefone'] . "</td>";
+            ?>
+                <td>
+                  <a href="">Editar</a>
+                  <a href="delete-cliente.php?id_cliente=<?php echo $cliente['id_cliente']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");'>Excluir</a>
+                </td>
+            <?php
+                echo "</tr>";
+              }
+            } else {
+              echo "<tr><td colspan='6'>Ainda não existem pessoas cadastradas!</td></tr>";
+            }
+            ?>
           </tbody>
         </table>
       </div>
     </div>
   </section>
+  <?php
+  if (isset($_GET['id_up'])) {
+    $id_update = addslashes($_GET['id_up']);
+    $res = $p->buscarDadosPessoa($id_update);
+  }
+
+
+  ?>
 </body>
 
 </html>

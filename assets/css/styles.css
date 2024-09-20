@@ -218,7 +218,8 @@ form input,
   box-sizing: border-box;
 }
 
-.email:focus, .senha:focus {
+.email:focus,
+.senha:focus {
   border: 1px solid #666666;
 }
 

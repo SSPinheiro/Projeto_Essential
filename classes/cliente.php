@@ -13,6 +13,23 @@ class Cliente
             $this->msgErro = $e->getMessage();
         }
     }
+    public function excluirCliente($id)
+    {
+        $cmd = $this->pdo->prepare("DELETE FROM cliente WHERE id_cliente = :id");
+        $cmd->bindValue(":id",$id);
+        $cmd->execute();
+    }
+    
+
+    public function buscarDados()
+    {
+        $res = array();
+        $cmd = $this->pdo->query("SELECT id_cliente, nome, cpf, email, telefone FROM cliente ORDER
+        BY id_cliente");
+        $res = $cmd->fetchAll(PDO::FETCH_ASSOC);
+        return $res;
+    }
+
     public function cadastrar($nome, $email, $cpf, $telefone)
     {
 
