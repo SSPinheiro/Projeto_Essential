@@ -103,6 +103,4 @@ $u = new Cliente("essentia", "localhost", "root", "Unida010!");
 
   ?>
 </body>
-</body>
-
 </html>
