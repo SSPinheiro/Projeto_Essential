@@ -13,6 +13,11 @@ class Cliente
             $this->msgErro = $e->getMessage();
         }
     }
+
+    public function prepare($sql) {
+        return $this->pdo->prepare($sql);
+    }
+
     public function excluirCliente($id)
     {
         $cmd = $this->pdo->prepare("DELETE FROM cliente WHERE id_cliente = :id");
@@ -48,4 +53,9 @@ class Cliente
             return true;
         }
     }
+    public function atualizarCliente($id_cliente, $nome, $email, $cpf, $telefone) {
+        $stmt = $this->pdo->prepare("UPDATE cliente SET nome = :nome, email = :email, cpf = :cpf, telefone = :telefone WHERE id_cliente = :id");
+        return $stmt->execute([':nome' => $nome, ':email' => $email, ':cpf' => $cpf, ':telefone' => $telefone, ':id' => $id_cliente]);
+    }
+    
 }

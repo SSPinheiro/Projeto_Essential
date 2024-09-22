@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 if (!isset($_SESSION['id_usuario'])) {
   header('location: login.php');
   exit();
@@ -58,12 +60,12 @@ $c = new cliente("essentia", "localhost", "root", "Unida010!");
         <table>
           <thead>
             <tr>
-              <th >ID</th>
-              <th >Nome</th>
-              <th >CPF</th>
-              <th >E-mail</th>
-              <th >Telefone</th>
-              <th >Botões</th>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>E-mail</th>
+              <th>Telefone</th>
+              <th>Botões</th>
             </tr>
           </thead>
           <tbody>
@@ -79,7 +81,7 @@ $c = new cliente("essentia", "localhost", "root", "Unida010!");
                 echo "<td>" . $cliente['telefone'] . "</td>";
             ?>
                 <td>
-                  <a href="">Editar</a>
+                  <a href="editar-cliente.php?id_cliente=<?php echo $cliente['id_cliente']; ?>">Editar</a>
                   <a href="delete-cliente.php?id_cliente=<?php echo $cliente['id_cliente']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");'>Excluir</a>
                 </td>
             <?php
