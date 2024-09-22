@@ -15,18 +15,19 @@ class Produto {
         }
     }
 
-    public function insertProduto($nome, $sku, $valor, $descricao, $caminho) {
-        $stmt = $this->pdo->prepare("INSERT INTO produto (nome, sku, valor, descricao, caminho) VALUES (:nome, :sku, :valor, :descricao, :caminho)");
+    public function insertProduto($nome, $sku, $valor, $quantidade, $descricao, $caminho) {
+        $stmt = $this->pdo->prepare("INSERT INTO produto (nome, sku, valor, quantidade, descricao, caminho) VALUES (:nome, :sku, :valor, :quantidade, :descricao, :caminho)");
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':sku', $sku);
         $stmt->bindParam(':valor', $valor);
+        $stmt->bindParam(':quantidade', $quantidade);
         $stmt->bindParam(':descricao', $descricao);
         $stmt->bindParam(':caminho', $caminho);
         return $stmt->execute();
     }
 
     public function getProdutos() {
-        $stmt = $this->pdo->query("SELECT * FROM produtos");
+        $stmt = $this->pdo->query("SELECT * FROM produto");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

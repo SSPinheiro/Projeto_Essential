@@ -74,6 +74,10 @@ $p = new produto();
                 <label class="input-label">Valor</label>
                 <input type="text" class="valor-input" name="valor" required>
               </div>
+              <div>
+                <label class="input-label">Quantidade</label>
+                <input type="text" class="valor-input" name="quantidade" required>
+              </div>
             </div>
             <div>
               <label class="bt-arquivo" for="bt-arquivo">Adicionar imagem</label>
@@ -88,7 +92,7 @@ $p = new produto();
   <?php
   // Verifica se o formulário foi enviado
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!empty($_POST['nome']) && !empty($_POST['sku']) && !empty($_POST['valor']) && !empty($_POST['descricao'])) {
+    if (!empty($_POST['nome']) && !empty($_POST['sku']) && !empty($_POST['valor']) && !empty($_POST['quantidade']) && !empty($_POST['descricao'])) {
 
       if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
         $caminho = 'uploads/' . basename($_FILES['imagem']['name']);
@@ -96,7 +100,7 @@ $p = new produto();
         // Move o arquivo para a pasta desejada
         if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminho)) {
           // Insere os dados no banco de dados
-          if ($p->insertProduto($_POST['nome'], $_POST['sku'], $_POST['valor'], $_POST['descricao'], $caminho)) {
+          if ($p->insertProduto($_POST['nome'], $_POST['sku'], $_POST['valor'], $_POST['quantidade'], $_POST['descricao'], $caminho)) {
             echo "Produto carregado e dados salvos com sucesso!";
           } else {
             echo "Erro ao salvar o produto.";
