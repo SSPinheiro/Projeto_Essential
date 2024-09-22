@@ -88,7 +88,7 @@ $c = new cliente("essentia", "localhost", "root", "Unida010!");
                 echo "</tr>";
               }
             } else {
-              echo "<tr><td colspan='6'>Ainda não existem pessoas cadastradas!</td></tr>";
+              echo "<tr><td colspan='6'>Ainda não existem clientes cadastradas!</td></tr>";
             }
             ?>
           </tbody>

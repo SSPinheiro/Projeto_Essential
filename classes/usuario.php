@@ -53,4 +53,18 @@ class Usuario
             return false;
         }
     }
+    public function buscarDados()
+    {
+        $res = array();
+        $cmd = $this->pdo->query("SELECT id_usuario, nome, email, cpf, telefone,dataNascimento FROM usuario ORDER
+        BY id_usuario");
+        $res = $cmd->fetchAll(PDO::FETCH_ASSOC);
+        return $res;
+    }
+    public function excluirUsuario($id)
+    {
+        $cmd = $this->pdo->prepare("DELETE FROM usuario WHERE id_usuario = :id");
+        $cmd->bindValue(":id",$id);
+        $cmd->execute();
+    }
 }
