@@ -13,6 +13,12 @@ class Usuario
             $this->msgErro = $e->getMessage();
         }
     }
+
+    public function prepare($sql)
+    {
+        return $this->pdo->prepare($sql);
+    }
+
     public function cadastrar($nome, $email, $cpf, $telefone, $dataNascimento, $senha)
     {
 
@@ -38,18 +44,15 @@ class Usuario
     {
 
         $sql = $this->pdo->prepare("SELECT id_usuario FROM usuario WHERE email = :e AND senha = :s");
-        $sql->bindValue(":e",$email);
-        $sql->bindValue(":s",sha1($senha));
+        $sql->bindValue(":e", $email);
+        $sql->bindValue(":s", sha1($senha));
         $sql->execute();
-        if($sql->rowCount() > 0)
-        {
+        if ($sql->rowCount() > 0) {
             $dado = $sql->fetch();
             session_start();
             $_SESSION['id_usuario'] = $dado['id_usuario'];
             return true;
-        }
-        else 
-        {
+        } else {
             return false;
         }
     }
@@ -64,7 +67,12 @@ class Usuario
     public function excluirUsuario($id)
     {
         $cmd = $this->pdo->prepare("DELETE FROM usuario WHERE id_usuario = :id");
-        $cmd->bindValue(":id",$id);
+        $cmd->bindValue(":id", $id);
         $cmd->execute();
+    }
+    public function atualizarUsuario($id_usuario, $nome, $email, $cpf, $telefone, $dataNascimento)
+    {
+        $stmt = $this->pdo->prepare("UPDATE usuario SET nome = :nome, email = :email, cpf = :cpf, telefone = :telefone, dataNascimento = :dataNascimento WHERE id_usuario = :id");
+        return $stmt->execute([':nome' => $nome, ':email' => $email, ':cpf' => $cpf, ':telefone' => $telefone, ':dataNascimento' => $dataNascimento,':id' => $id_usuario]);
     }
 }

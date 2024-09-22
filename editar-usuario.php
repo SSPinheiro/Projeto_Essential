@@ -6,26 +6,27 @@ if (!isset($_SESSION['id_usuario'])) {
     header('location: login.php');
     exit();
 }
-require_once('classes/cliente.php');
-$u = new Cliente("essentia", "localhost", "root", "Unida010!");
+require_once('classes/usuario.php');
+$u = new Usuario("essentia", "localhost", "root", "Unida010!");
 
-if (isset($_GET['id_cliente'])) {
-    $cliente_id = $_GET['id_cliente'];
-    $stmt = $u->prepare("SELECT * FROM cliente Where id_cliente = :id");
-    $stmt->execute([':id' => $cliente_id]);
+if (isset($_GET['id_usuario'])) {
+    $usuario_id = $_GET['id_usuario'];
+    $stmt = $u->prepare("SELECT * FROM usuario Where id_usuario = :id");
+    $stmt->execute([':id' => $usuario_id]);
 
 
-    if ($cliente = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $nome = $cliente['nome'];
-        $email = $cliente['email'];
-        $cpf = $cliente['cpf'];
-        $telefone = $cliente['telefone'];
+    if ($usuario = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $nome = $usuario['nome'];
+        $email = $usuario['email'];
+        $cpf = $usuario['cpf'];
+        $telefone = $usuario['telefone'];
+        $dataNascimento = $usuario['dataNascimento'];
     } else {
-        echo "<h5>Cliente não encontrado</h5>";
+        echo "<h5>Usuário não encontrado</h5>";
         exit();
     }
 } else {
-    echo "<h5>ID do cliente não fornecido</h5>";
+    echo "<h5>ID do usuário não fornecido</h5>";
     exit();
 }
 ?>
@@ -35,7 +36,7 @@ if (isset($_GET['id_cliente'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Cliente</title>
+    <title>Editar Usuario</title>
     <link rel="stylesheet" href="./assets/css/reset.css">
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="https://use.typekit.net/tvf0cut.css">
@@ -72,7 +73,7 @@ if (isset($_GET['id_cliente'])) {
             <div>
                 <a href="cadastro-cliente.php" class="link-voltar">
                     <img src="assets/images/arrow.svg" alt="">
-                    <span>Cadastro de cliente</span>
+                    <span>Editar Usuario</span>
                 </a>
             </div>
             <div class="container-small">
@@ -95,6 +96,10 @@ if (isset($_GET['id_cliente'])) {
                             <label class="input-label">Telefone</label>
                             <input type="tel" class="telefone-input" name="telefone" value="<?php echo htmlspecialchars($telefone); ?>" required maxlength="15">
                         </div>
+                        <div>
+                            <label class="input-label">Data Nascimento</label>
+                            <input type="date" class="data-input" name="dataNascimento" value="<?php echo htmlspecialchars($dataNascimento); ?>" required maxlength="15">
+                        </div>
                     </div>
                     <button type="submit" class="button-default" name="envio">Salvar alterações</button>
                 </form>
@@ -102,17 +107,18 @@ if (isset($_GET['id_cliente'])) {
         </div>
     </section>
     <?php
-    if (isset($_POST['envio'])) {
+      if(isset($_POST['envio'])) {
         $nome = addslashes($_POST['nome']);
         $email = addslashes($_POST['email']);
         $cpf = addslashes($_POST['cpf']);
         $telefone = addslashes($_POST['telefone']);
+        $dataNascimento = addslashes($_POST['dataNascimento']);
 
-        // Aqui você deve atualizar o cliente no banco de dados
-        if ($u->atualizarCliente($cliente_id, $nome, $email, $cpf, $telefone)) {
-            header('location: gerenciamento-cliente.php');
+        // Aqui você deve atualizar o usuario no banco de dados
+        if ($u->atualizarUsuario($usuario_id, $nome, $email, $cpf, $telefone, $dataNascimento)) {
+            header('location: gerenciamento-usuario.php');
         } else {
-            echo "Erro ao atualizar cliente.";
+            echo "Erro ao atualizar Usuario.";
         }
     }
     ?>
