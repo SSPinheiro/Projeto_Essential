@@ -15,6 +15,10 @@ class Produto {
         }
     }
 
+    public function prepare($sql) {
+        return $this->pdo->prepare($sql);
+    }
+
     public function insertProduto($nome, $sku, $valor, $quantidade, $descricao, $caminho) {
         $stmt = $this->pdo->prepare("INSERT INTO produto (nome, sku, valor, quantidade, descricao, caminho) VALUES (:nome, :sku, :valor, :quantidade, :descricao, :caminho)");
         $stmt->bindParam(':nome', $nome);
@@ -38,5 +42,33 @@ class Produto {
         BY id_produto");
         $res = $cmd->fetchAll(PDO::FETCH_ASSOC);
         return $res;
+    }
+    public function excluirProduto($id)
+    {
+        $cmd = $this->pdo->prepare("DELETE FROM produto WHERE id_produto = :id");
+        $cmd->bindValue(":id",$id);
+        $cmd->execute();
+    }
+    public function atualizarProduto($id, $nome, $sku, $valor, $quantidade, $descricao, $caminho = null) {
+        $sql = "UPDATE produto SET nome = :nome, sku = :sku, valor = :valor, quantidade = :quantidade, descricao = :descricao";
+        if ($caminho) {
+            $sql .= ", caminho = :caminho";
+        }
+        $sql .= " WHERE id_produto = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $params = [
+            ':nome' => $nome,
+            ':sku' => $sku,
+            ':valor' => $valor,
+            ':quantidade' => $quantidade,
+            ':descricao' => $descricao,
+            ':id' => $id,
+        ];
+        if ($caminho) {
+            $params[':caminho'] = $caminho;
+        }
+
+        return $stmt->execute($params);
     }
 }

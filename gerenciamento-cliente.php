@@ -96,14 +96,6 @@ $c = new cliente("essentia", "localhost", "root", "Unida010!");
       </div>
     </div>
   </section>
-  <?php
-  if (isset($_GET['id_up'])) {
-    $id_update = addslashes($_GET['id_up']);
-    $res = $p->buscarDadosPessoa($id_update);
-  }
-
-
-  ?>
 </body>
 
 </html>
