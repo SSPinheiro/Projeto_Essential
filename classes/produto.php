@@ -30,4 +30,13 @@ class Produto {
         $stmt = $this->pdo->query("SELECT * FROM produto");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function buscarDados()
+    {
+        $res = array();
+        $cmd = $this->pdo->query("SELECT id_produto, nome, sku, valor, quantidade, descricao, caminho FROM produto ORDER
+        BY id_produto");
+        $res = $cmd->fetchAll(PDO::FETCH_ASSOC);
+        return $res;
+    }
 }
