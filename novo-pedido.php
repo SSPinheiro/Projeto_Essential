@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION['id_usuario'])){
+if (!isset($_SESSION['id_usuario'])) {
   header('location: login.php');
   exit();
 }
@@ -55,7 +55,9 @@ if(!isset($_SESSION['id_usuario'])){
       </div>
       <div class="maxW340">
         <label class="input-label">Cliente</label>
-        <input type="text" class="input" name="cliente">
+        <select class="input" id="cliente" name="cliente">
+          <option value="">Selecione um cliente</option>
+        </select>
       </div>
       <div class="shadow-table">
         <table>
@@ -69,15 +71,17 @@ if(!isset($_SESSION['id_usuario'])){
           </thead>
           <tbody>
             <tr>
-              <td><input type="text" class="input" name="produto"></td>
-              <td><input type="text" class="input" name="quantidade"></td>
-              <td><input type="text" class="input" name="valorParcial"></td>
-              <td><a href="#" class="bt-remover"><img src="assets/images/remover.svg" alt="" /></a></td>
-            </tr>
-            <tr>
-              <td><input type="text" class="input" name="produto"></td>
-              <td><input type="text" class="input" name="quantidade"></td>
-              <td><input type="text" class="input" name="valorParcial"></td>
+              <td>
+                <select class="input produto" name="produto[]">
+                  <option value="">Selecione um produto</option>
+                </select>
+              </td>
+              <td>
+                <input type="number" class="input quantidade" name="quantidade[]" min="1">
+              </td>
+              <td>
+                <input type="text" class="input valorParcial" name="valor[]" readonly>
+              </td>
               <td><a href="#" class="bt-remover"><img src="assets/images/remover.svg" alt="" /></a></td>
             </tr>
           </tbody>
@@ -120,6 +124,69 @@ if(!isset($_SESSION['id_usuario'])){
       </div>
     </div>
   </section>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        url: 'pegar_clientes.php', // O arquivo PHP que busca os clientes
+        method: 'GET',
+        dataType: 'json', // Esperamos receber JSON
+        success: function(data) {
+          console.log(data); // Adicione esta linha para verificar a resposta
+          $('#cliente').empty().append('<option value="">Selecione um cliente</option>');
+          $.each(data, function(index, cliente) {
+            $('#cliente').append('<option value="' + cliente.id_cliente + '">' + cliente.nome + '</option>');
+          });
+        },
+        error: function() {
+          alert('Erro ao carregar os clientes.');
+        }
+      });
+      // Carregar produtos
+      $.ajax({
+        url: 'pegar_produtos.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          // Para cada select de produtos que você adicionou
+          $('.produto').each(function() {
+            $(this).empty().append('<option value="">Selecione um produto</option>');
+
+            $.each(data, function(index, produto) {
+                    $(this).append('<option value="' + produto.id_produto + '" data-valor="' + produto.valor + '">' + produto.nome + '</option>');
+                }.bind(this));
+            });
+        },
+        error: function() {
+            alert('Erro ao carregar os produtos.');
+        }
+    });
+
+    // Calcular valor parcial
+    $(document).on('change', '.produto', function() {
+        var $linha = $(this).closest('tr');
+        var valor = parseFloat($(this).find(':selected').data('valor')) || 0;
+        var quantidade = parseInt($(this).find(':selected').data('quantidade')) ||0;
+        $linha.find('.quantidade').attr('max',quantidade);
+        $linha.find('.quantidade').val(1);
+
+        var quant = 1;
+        var valorParcial = valor * quant;
+        $linha.find('.valorParcial').val(valorParcial.toFixed(2));
+    }); 
+
+    // Atualizar valor parcial ao mudar quantidade
+    $(document).on('input', '.quant', function() {
+        var $linha = $(this).closest('tr');
+        var valor = parseFloat($linha.find('.produto').find(':selected').data('valor')) || 0;
+        var quant = Math.min(parseInt($(this).val()) || 0, parseInt($(this).atrr('max')) || 0);
+        $(this).val(quantidade);
+
+      var valorParcial = preco * quantidade;
+      $linha.find('.valorParcial').val(valorParcial.toFixed(2));
+    });
+});
+  </script>
 </body>
 
 </html>
