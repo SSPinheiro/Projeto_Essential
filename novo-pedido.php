@@ -126,66 +126,67 @@ if (!isset($_SESSION['id_usuario'])) {
   </section>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    $(document).ready(function() {
-      $.ajax({
-        url: 'pegar_clientes.php', // O arquivo PHP que busca os clientes
-        method: 'GET',
-        dataType: 'json', // Esperamos receber JSON
-        success: function(data) {
-          console.log(data); // Adicione esta linha para verificar a resposta
-          $('#cliente').empty().append('<option value="">Selecione um cliente</option>');
-          $.each(data, function(index, cliente) {
-            $('#cliente').append('<option value="' + cliente.id_cliente + '">' + cliente.nome + '</option>');
-          });
-        },
-        error: function() {
-          alert('Erro ao carregar os clientes.');
-        }
+ $(document).ready(function() {
+  $.ajax({
+    url: 'pegar_clientes.php', // O arquivo PHP que busca os clientes
+    method: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      $('#cliente').empty().append('<option value="">Selecione um cliente</option>');
+      $.each(data, function(index, cliente) {
+        $('#cliente').append('<option value="' + cliente.id_cliente + '">' + cliente.nome + '</option>');
       });
-      // Carregar produtos
-      $.ajax({
-        url: 'pegar_produtos.php',
-        method: 'GET',
-        dataType: 'json',
-        success: function(data) {
-          // Para cada select de produtos que você adicionou
-          $('.produto').each(function() {
-            $(this).empty().append('<option value="">Selecione um produto</option>');
+    },
+    error: function() {
+      alert('Erro ao carregar os clientes.');
+    }
+  });
 
-            $.each(data, function(index, produto) {
-                    $(this).append('<option value="' + produto.id_produto + '" data-valor="' + produto.valor + '">' + produto.nome + '</option>');
-                }.bind(this));
-            });
-        },
-        error: function() {
-            alert('Erro ao carregar os produtos.');
-        }
-    });
+  // Carregar produtos
+  $.ajax({
+    url: 'pegar_produtos.php',
+    method: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      $('.produto').each(function() {
+        $(this).empty().append('<option value="">Selecione um produto</option>');
 
-    // Calcular valor parcial
-    $(document).on('change', '.produto', function() {
-        var $linha = $(this).closest('tr');
-        var valor = parseFloat($(this).find(':selected').data('valor')) || 0;
-        var quantidade = parseInt($(this).find(':selected').data('quantidade')) ||0;
-        $linha.find('.quantidade').attr('max',quantidade);
-        $linha.find('.quantidade').val(1);
+        $.each(data, function(index, produto) {
+          $(this).append('<option value="' + produto.id_produto + '" data-valor="' + produto.valor + '" data-quantidade="' + produto.quantidade + '">' + produto.nome + '</option>');
+        }.bind(this));
+      });
+    },
+    error: function() {
+      alert('Erro ao carregar os produtos.');
+    }
+  });
 
-        var quant = 1;
-        var valorParcial = valor * quant;
-        $linha.find('.valorParcial').val(valorParcial.toFixed(2));
-    }); 
+  // Calcular valor parcial
+  $(document).on('change', '.produto', function() {
+    var $linha = $(this).closest('tr');
+    var valor = parseFloat($(this).find(':selected').data('valor')) || 0;
+    var quantidadeMax = parseInt($(this).find(':selected').data('quantidade')) || 0;
 
-    // Atualizar valor parcial ao mudar quantidade
-    $(document).on('input', '.quant', function() {
-        var $linha = $(this).closest('tr');
-        var valor = parseFloat($linha.find('.produto').find(':selected').data('valor')) || 0;
-        var quant = Math.min(parseInt($(this).val()) || 0, parseInt($(this).atrr('max')) || 0);
-        $(this).val(quantidade);
+    $linha.find('.quantidade').attr('max', quantidadeMax);
+    $linha.find('.quantidade').val(1); 
 
-      var valorParcial = preco * quantidade;
-      $linha.find('.valorParcial').val(valorParcial.toFixed(2));
-    });
+    var valorParcial = valor * 1; 
+    $linha.find('.valorParcial').val(valorParcial.toFixed(2));
+  });
+
+  $(document).on('input', '.quantidade', function() {
+    var $linha = $(this).closest('tr');
+    var valor = parseFloat($linha.find('.produto').find(':selected').data('valor')) || 0;
+    var quantidadeMax = parseInt($(this).attr('max')) || 0;
+
+    var quant = Math.min(Math.max(parseInt($(this).val()) || 0, 1), quantidadeMax);
+    $(this).val(quant); 
+
+    var valorParcial = valor * quant; 
+    $linha.find('.valorParcial').val(valorParcial.toFixed(2));
+  });
 });
+
   </script>
 </body>
 
