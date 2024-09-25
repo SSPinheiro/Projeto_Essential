@@ -27,10 +27,10 @@
 
 
 .blc-subtotal input {
-    max-width: 100px;
+    max-width: 120px;
     margin: 0;
     padding: 0 23px;
-    text-align: right;
+    text-align: center;
 }
 
 .blc-subtotal input:disabled {

@@ -69,8 +69,8 @@ if (!isset($_SESSION['id_usuario'])) {
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
+          <tbody id="produto-body">
+            <tr class="produto-linha">
               <td>
                 <select class="input produto" name="produto[]">
                   <option value="">Selecione um produto</option>
@@ -98,15 +98,15 @@ if (!isset($_SESSION['id_usuario'])) {
                   <div class="blc-subtotal d-flex">
                     <div class="d-flex align-items-center">
                       <span>Subtotal</span>
-                      <input type="text" class="input" disabled value="572,00" />
+                      <input type="text" class="input" disabled value="0,00" />
                     </div>
                     <div class="d-flex align-items-center">
                       <span>Desconto</span>
-                      <input type="text" class="input" value="100,00" />
+                      <input type="text" class="input" disabled value="0,00" />
                     </div>
                     <div class="d-flex align-items-center">
                       <span>Total</span>
-                      <input type="text" class="input" disabled value="472,00" />
+                      <input type="text" class="input" disabled value="0,00" />
                     </div>
                   </div>
                 </div>
@@ -126,67 +126,138 @@ if (!isset($_SESSION['id_usuario'])) {
   </section>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
- $(document).ready(function() {
-  $.ajax({
-    url: 'pegar_clientes.php', // O arquivo PHP que busca os clientes
-    method: 'GET',
-    dataType: 'json',
-    success: function(data) {
-      $('#cliente').empty().append('<option value="">Selecione um cliente</option>');
-      $.each(data, function(index, cliente) {
-        $('#cliente').append('<option value="' + cliente.id_cliente + '">' + cliente.nome + '</option>');
+    $(document).ready(function() {
+      $.ajax({
+        url: 'pegar_clientes.php', // O arquivo PHP que busca os clientes
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          $('#cliente').empty().append('<option value="">Selecione um cliente</option>');
+          $.each(data, function(index, cliente) {
+            $('#cliente').append('<option value="' + cliente.id_cliente + '">' + cliente.nome + '</option>');
+          });
+        },
+        error: function() {
+          alert('Erro ao carregar os clientes.');
+        }
       });
-    },
-    error: function() {
-      alert('Erro ao carregar os clientes.');
-    }
-  });
 
-  // Carregar produtos
-  $.ajax({
-    url: 'pegar_produtos.php',
-    method: 'GET',
-    dataType: 'json',
-    success: function(data) {
-      $('.produto').each(function() {
-        $(this).empty().append('<option value="">Selecione um produto</option>');
+      // Carregar produtos
+      $.ajax({
+        url: 'pegar_produtos.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          $('.produto').each(function() {
+            $(this).empty().append('<option value="">Selecione um produto</option>');
 
-        $.each(data, function(index, produto) {
-          $(this).append('<option value="' + produto.id_produto + '" data-valor="' + produto.valor + '" data-quantidade="' + produto.quantidade + '">' + produto.nome + '</option>');
-        }.bind(this));
+            $.each(data, function(index, produto) {
+              $(this).append('<option value="' + produto.id_produto + '" data-valor="' + produto.valor + '" data-quantidade="' + produto.quantidade + '">' + produto.nome + '</option>');
+            }.bind(this));
+          });
+        },
+        error: function() {
+          alert('Erro ao carregar os produtos.');
+        }
       });
-    },
-    error: function() {
-      alert('Erro ao carregar os produtos.');
-    }
-  });
 
-  // Calcular valor parcial
-  $(document).on('change', '.produto', function() {
-    var $linha = $(this).closest('tr');
-    var valor = parseFloat($(this).find(':selected').data('valor')) || 0;
-    var quantidadeMax = parseInt($(this).find(':selected').data('quantidade')) || 0;
+      function atualizarProdutos() {
+        var produtosSelecionados = [];
 
-    $linha.find('.quantidade').attr('max', quantidadeMax);
-    $linha.find('.quantidade').val(1); 
+        // Coleta produtos já selecionados
+        $('.produto').each(function() {
+          var valor = $(this).val();
+          if (valor) {
+            produtosSelecionados.push(valor);
+          }
+        });
 
-    var valorParcial = valor * 1; 
-    $linha.find('.valorParcial').val(valorParcial.toFixed(2));
-  });
+        // Atualiza as opções dos produtos em todas as linhas
+        $('.produto').each(function() {
+          var $select = $(this);
+          $select.find('option').each(function() {
+            var $option = $(this);
+            if (produtosSelecionados.includes($option.val()) && $option.val() !== $select.val()) {
+              $option.prop('disabled', true);
+            } else {
+              $option.prop('disabled', false);
+            }
+          });
+        });
+      }
 
-  $(document).on('input', '.quantidade', function() {
-    var $linha = $(this).closest('tr');
-    var valor = parseFloat($linha.find('.produto').find(':selected').data('valor')) || 0;
-    var quantidadeMax = parseInt($(this).attr('max')) || 0;
+      function calcularSubtotal() {
+        let subtotal = 0;
+        let totalProdutos = 0;
 
-    var quant = Math.min(Math.max(parseInt($(this).val()) || 0, 1), quantidadeMax);
-    $(this).val(quant); 
+        $('.valorParcial').each(function() {
+          const valor = parseFloat($(this).val()) || 0;
+          subtotal += valor;
 
-    var valorParcial = valor * quant; 
-    $linha.find('.valorParcial').val(valorParcial.toFixed(2));
-  });
-});
+          const quantidade = parseInt($(this).closest('tr').find('.quantidade').val()) || 0;
+          totalProdutos += quantidade;
+        });
 
+        // Calcular o desconto apenas se totalProdutos for um múltiplo de 10
+        const descontoPorDez = Math.floor(totalProdutos / 10) * 10;
+        const total = subtotal - descontoPorDez;
+
+        // Atualizar os campos
+        $('.blc-subtotal input').eq(0).val(subtotal.toFixed(2)); // Subtotal
+        $('.blc-subtotal input').eq(1).val(descontoPorDez.toFixed(2)); // Desconto
+        $('.blc-subtotal input').eq(2).val(total.toFixed(2)); // Total
+      }
+
+      // Calcular valor parcial
+      $(document).on('change', '.produto', function() {
+        var $linha = $(this).closest('tr');
+        var valor = parseFloat($(this).find(':selected').data('valor')) || 0;
+        var quantidadeMax = parseInt($(this).find(':selected').data('quantidade')) || 0;
+
+        $linha.find('.quantidade').attr('max', quantidadeMax);
+        $linha.find('.quantidade').val(1); // Resetar quantidade para 1
+
+        var valorParcial = valor * 1;
+        $linha.find('.valorParcial').val(valorParcial.toFixed(2));
+        calcularSubtotal(); // Atualiza subtotal aqui
+      });
+
+      // Atualizar subtotal ao mudar a quantidade
+      $(document).on('input', '.quantidade', function() {
+        var $linha = $(this).closest('tr');
+        var valor = parseFloat($linha.find('.produto').find(':selected').data('valor')) || 0;
+        var quantidadeMax = parseInt($(this).attr('max')) || 0;
+
+        var quant = Math.min(Math.max(parseInt($(this).val()) || 0, 1), quantidadeMax);
+        $(this).val(quant);
+
+        var valorParcial = valor * quant;
+        $linha.find('.valorParcial').val(valorParcial.toFixed(2));
+
+        // Aqui chamamos a função de subtotal após a alteração da quantidade
+        calcularSubtotal();
+      });
+
+      // Adicionar nova linha de produto
+      $(document).on('click', '.bt-add-produto', function(e) {
+        e.preventDefault();
+        var novaLinha = $('.produto-linha').first().clone(); // Clonando a primeira linha
+        novaLinha.find('select').val('').end().find('.quantidade').val(1).end().find('.valorParcial').val('');
+        $('#produto-body').append(novaLinha); // Adicionando a nova linha à tabela
+        atualizarProdutos();
+      });
+
+      // Remover linha de produto
+      $(document).on('click', '.bt-remover', function(e) {
+        e.preventDefault();
+        if ($('#produto-body .produto-linha').length > 1) {
+          $(this).closest('tr').remove(); // Remover a linha
+          atualizarProdutos(); // Atualiza as opções após remover uma linha
+        } else {
+          alert('Você precisa ter pelo menos uma linha de produto.');
+        }
+      });
+    });
   </script>
 </body>
 
