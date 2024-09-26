@@ -53,76 +53,83 @@ if (!isset($_SESSION['id_usuario'])) {
           <span>Novo pedido</span>
         </a>
       </div>
-      <div class="maxW340">
-        <label class="input-label">Cliente</label>
-        <select class="input" id="cliente" name="cliente">
-          <option value="">Selecione um cliente</option>
-        </select>
-      </div>
-      <div class="shadow-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th>Quantidade</th>
-              <th>Valor parcial</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="produto-body">
-            <tr class="produto-linha">
-              <td>
-                <select class="input produto" name="produto[]">
-                  <option value="">Selecione um produto</option>
-                </select>
-              </td>
-              <td>
-                <input type="number" class="input quantidade" name="quantidade[]" min="1">
-              </td>
-              <td>
-                <input type="text" class="input valorParcial" name="valor[]" readonly>
-              </td>
-              <td><a href="#" class="bt-remover"><img src="assets/images/remover.svg" alt="" /></a></td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="4">
-                <div class="row justify-content-between align-items-center">
-                  <div class="col">
-                    <a href="#" class="bt-add-produto">
-                      <span>Adicionar produto</span>
-                      <img src="assets/images/adicionar.svg" alt="" />
-                    </a>
+      <form action="salvar_pedido.php" method="POST">
+        <div class="maxW340">
+          <label class="input-label">Cliente</label>
+          <select class="input" id="cliente" name="cliente" required>
+            <option value="">Selecione um cliente</option>
+          </select>
+        </div>
+        <div class="shadow-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Valor parcial</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="produto-body">
+              <tr class="produto-linha">
+                <td>
+                  <select class="input produto" name="produto[]">
+                    <option value="">Selecione um produto</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="number" class="input quantidade" name="quantidade[]" min="1">
+                </td>
+                <td>
+                  <input type="text" class="input valorParcial" name="valor[]" readonly>
+                </td>
+                <td><a href="#" class="bt-remover"><img src="assets/images/remover.svg" alt="" /></a></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4">
+                  <div class="row justify-content-between align-items-center">
+                    <div class="col">
+                      <a href="#" class="bt-add-produto">
+                        <span>Adicionar produto</span>
+                        <img src="assets/images/adicionar.svg" alt="" />
+                      </a>
+                    </div>
+                    <div class="blc-subtotal d-flex">
+                      <div class="d-flex align-items-center">
+                        <span>Subtotal</span>
+                        <input type="text" class="input" disabled value="0,00" />
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span>Desconto</span>
+                        <input type="text" class="input" disabled value="0,00" />
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span>Total</span>
+                        <input type="text" class="input" disabled value="0,00" />
+                      </div>
+                    </div>
                   </div>
-                  <div class="blc-subtotal d-flex">
-                    <div class="d-flex align-items-center">
-                      <span>Subtotal</span>
-                      <input type="text" class="input" disabled value="0,00" />
-                    </div>
-                    <div class="d-flex align-items-center">
-                      <span>Desconto</span>
-                      <input type="text" class="input" disabled value="0,00" />
-                    </div>
-                    <div class="d-flex align-items-center">
-                      <span>Total</span>
-                      <input type="text" class="input" disabled value="0,00" />
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <div class="maxW340">
-        <label class="input-label">Observação</label>
-        <input type="text" class="input" name="observacao">
-      </div>
-      <div class="maxW340">
-        <button type="submit" class="button-default">Salvar</button>
-      </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="maxW340">
+          <label class="input-label">Observação</label>
+          <input type="text" class="input" name="observacao">
+        </div>
+         <!-- Campos ocultos para subtotal, desconto e total -->
+         <input type="hidden" name="subtotal" value="0.00">
+        <input type="hidden" name="desconto" value="0.00">
+        <input type="hidden" name="total" value="0.00">
+        <div class="maxW340">
+          <button type="submit" class="button-default">Salvar</button>
+        </div>
     </div>
+    </form>
+
   </section>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
@@ -206,6 +213,10 @@ if (!isset($_SESSION['id_usuario'])) {
         $('.blc-subtotal input').eq(0).val(subtotal.toFixed(2)); // Subtotal
         $('.blc-subtotal input').eq(1).val(descontoPorDez.toFixed(2)); // Desconto
         $('.blc-subtotal input').eq(2).val(total.toFixed(2)); // Total
+
+        $('input[name="subtotal"]').val(subtotal.toFixed(2));
+        $('input[name="desconto"]').val(descontoPorDez.toFixed(2));
+        $('input[name="total"]').val(total.toFixed(2));
       }
 
       // Calcular valor parcial
@@ -256,6 +267,18 @@ if (!isset($_SESSION['id_usuario'])) {
         } else {
           alert('Você precisa ter pelo menos uma linha de produto.');
         }
+      });
+
+     // Atualizar valores ocultos antes de enviar o formulário
+      $('form').on('submit', function() {
+        let subtotal = parseFloat($('.blc-subtotal input').eq(0).val().replace(',', '.')) || 0;
+        let desconto = parseFloat($('.blc-subtotal input').eq(1).val().replace(',', '.')) || 0;
+        let total = parseFloat($('.blc-subtotal input').eq(2).val().replace(',', '.')) || 0;
+
+        $('input[name="subtotal"]').val(subtotal.toFixed(2));
+        $('input[name="desconto"]').val(desconto.toFixed(2));
+        $('input[name="total"]').val(total.toFixed(2));
+
       });
     });
   </script>
