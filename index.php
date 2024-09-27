@@ -4,6 +4,8 @@ if(!isset($_SESSION['id_usuario'])){
   header('location: login.php');
   exit();
 }
+require_once ('classes/produto.php');
+$p = new Produto;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -52,7 +54,7 @@ if(!isset($_SESSION['id_usuario'])){
           <div class="d-flex justify-content-between">
             <div>
               <h2>Clientes</h2>
-              <span>444</span>
+              <span><?php echo $p->contarProdutos()?></span>
             </div>
             <img src="assets/images/icon-users.svg" alt="">
           </div>
@@ -62,7 +64,7 @@ if(!isset($_SESSION['id_usuario'])){
           <div class="d-flex justify-content-between">
             <div>
               <h2>Produtos</h2>
-              <span>444</span>
+              <span><?php echo $p->contarProdutos()?></span>
             </div>
             <img src="assets/images/icon-product.svg" style="max-width: 76px;" alt="">
           </div>
@@ -72,7 +74,7 @@ if(!isset($_SESSION['id_usuario'])){
           <div class="d-flex justify-content-between">
             <div>
               <h2>Pedidos</h2>
-              <span>444</span>
+              <span><?php echo $p->contarProdutos()?></span>
             </div>
             <img src="assets/images/icon-pedido.svg" alt="">
           </div>

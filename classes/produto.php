@@ -71,4 +71,19 @@ class Produto {
 
         return $stmt->execute($params);
     }
+    public function atualizarQuantidade($id, $quantidade){
+        $sql = "UPDATE produto SET quantidade = :quantidade WHERE id_produto = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $params = [
+            ':quantidade' => $quantidade,
+            ':id' => $id,
+        ];
+        return $stmt->execute($params);
+    }
+    public function contarProdutos(){
+        $sql = "SELECT COUNT(*) AS total FROM produto";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 }

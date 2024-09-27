@@ -6,7 +6,7 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $host = 'localhost'; // ou o host do seu banco de dados
+    $host = 'localhost';
     $db = 'essentia';
     $user = 'root';
     $pass = 'Unida010!';
@@ -60,6 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt_produto->bindParam(':quantidade', $quantidade);
                 $stmt_produto->bindParam(':valor', $valor);
                 $stmt_produto->execute();
+
+                $sql_atualiza = "UPDATE produto SET quantidade = quantidade - :quantidade WHERE id_produto = :id_produto";
+                $stmt_atualiza = $conexao->prepare($sql_atualiza);
+                $stmt_atualiza->bindParam(':quantidade', $quantidade);
+                $stmt_atualiza->bindParam(':id_produto', $id_produto);
+                $stmt_atualiza->execute();
             }
 
             echo "Pedido salvo com sucesso!";
