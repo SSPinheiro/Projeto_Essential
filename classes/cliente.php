@@ -57,5 +57,12 @@ class Cliente
         $stmt = $this->pdo->prepare("UPDATE cliente SET nome = :nome, email = :email, cpf = :cpf, telefone = :telefone WHERE id_cliente = :id");
         return $stmt->execute([':nome' => $nome, ':email' => $email, ':cpf' => $cpf, ':telefone' => $telefone, ':id' => $id_cliente]);
     }
+
+    public function contarClientes(){
+        $sql = "SELECT COUNT(*) AS total FROM cliente";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
     
 }

@@ -303,6 +303,22 @@ table tfoot tr td {
   padding: 0 23px;
 }
 
+select {
+  width: 100%;
+  max-width: 400px;
+  height: 48px;
+  font-size: 16px;
+  padding: 0 16px;
+  border-radius: 4px;
+  border: 1px solid #CCCCCC;
+  margin: 10px 0;
+}
+
+select:focus {
+  border: 1px solid #666666;
+}
+
+
 @media (max-width: 767px) {
   .container {
     padding: 0 15px;

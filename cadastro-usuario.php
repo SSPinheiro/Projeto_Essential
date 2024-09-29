@@ -1,6 +1,12 @@
 <?php
 require_once 'classes/usuario.php';
 $u = new Usuario("essentia", "localhost", "root", "Unida010!");
+$perguntas = [
+  "Qual é o nome do seu primeiro animal de estimação?",
+  "Qual é a sua cidade natal?",
+  "Qual é o nome da sua escola primária?",
+  "Qual é o seu anime favorito?",
+];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -75,6 +81,18 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!");
               <label class="input-label">Senha</label>
               <input type="password" class="senha-input" name="senha" required maxlength="40">
             </div>
+            <div>
+              <label class="input-label" for="pergunta-secreta">Pergunta Secreta</label>
+              <select id="pergunta-secreta" name="pergunta-secreta" required>
+                <?php foreach ($perguntas as $pergunta): ?>
+                  <option value="<?php echo htmlspecialchars($pergunta); ?>"><?php echo htmlspecialchars($pergunta); ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div>
+              <label for="resposta-secreta">Resposta</label>
+              <input type="text" id="resposta-secreta" name="resposta-secreta" required>
+            </div>
           </div>
           <button type="submit" name="envio" class="button-default">Salvar novo usuário</button>
         </form>
@@ -83,17 +101,19 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!");
   </section>
   <?php
 
-  if(isset($_POST['envio'])) {
+  if (isset($_POST['envio'])) {
     $nome = addslashes($_POST['nome']);
     $email = addslashes($_POST['email']);
     $cpf = addslashes($_POST['cpf']);
     $telefone = addslashes($_POST['telefone']);
     $dataNascimento = addslashes($_POST['data-nascimento']);
     $senha = addslashes($_POST['senha']);
+    $perguntaSecreta = addslashes($_POST['pergunta-secreta']);
+    $respostaSecreta = addslashes($_POST['resposta-secreta']);
 
-    if (!empty($nome) && !empty($email) && !empty($cpf) && !empty($telefone) && !empty($dataNascimento) && !empty($senha)) {
+    if (!empty($nome) && !empty($email) && !empty($cpf) && !empty($telefone) && !empty($dataNascimento) && !empty($senha) && !empty($perguntaSecreta) && !empty($respostaSecreta)) {
       if ($u->msgErro == "") {
-        if ($u->cadastrar($nome, $email, $cpf, $telefone, $dataNascimento, $senha)) {
+        if ($u->cadastrar($nome, $email, $cpf, $telefone, $dataNascimento, $senha, $perguntaSecreta, $respostaSecreta)) {
           echo "cadastrado com sucesso acesse para entrar!";
         } else {
           echo "email ja cadastrado!";

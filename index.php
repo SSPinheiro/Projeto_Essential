@@ -5,7 +5,11 @@ if(!isset($_SESSION['id_usuario'])){
   exit();
 }
 require_once ('classes/produto.php');
+require_once ('classes/cliente.php');
+require_once ('pegar-pedidos.php');
 $p = new Produto;
+$c = new Cliente("essentia", "localhost", "root", "Unida010!");
+$pe = new Pedido;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -64,7 +68,7 @@ $p = new Produto;
           <div class="d-flex justify-content-between">
             <div>
               <h2>Produtos</h2>
-              <span><?php echo $p->contarProdutos()?></span>
+              <span><?php echo $c->contarClientes()?></span>
             </div>
             <img src="assets/images/icon-product.svg" style="max-width: 76px;" alt="">
           </div>
@@ -74,7 +78,7 @@ $p = new Produto;
           <div class="d-flex justify-content-between">
             <div>
               <h2>Pedidos</h2>
-              <span><?php echo $p->contarProdutos()?></span>
+              <span><?php echo $pe->contarPedidos()?></span>
             </div>
             <img src="assets/images/icon-pedido.svg" alt="">
           </div>

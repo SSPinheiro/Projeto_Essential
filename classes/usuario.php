@@ -19,7 +19,7 @@ class Usuario
         return $this->pdo->prepare($sql);
     }
 
-    public function cadastrar($nome, $email, $cpf, $telefone, $dataNascimento, $senha)
+    public function cadastrar($nome, $email, $cpf, $telefone, $dataNascimento, $senha, $perguntaSecreta, $respostaSecreta)
     {
 
         $sql = $this->pdo->prepare("SELECT id_usuario FROM usuario WHERE email = :e");
@@ -28,13 +28,15 @@ class Usuario
         if ($sql->rowCount() > 0) {
             return false;
         } else {
-            $sql = $this->pdo->prepare("INSERT INTO usuario (nome, email,cpf, telefone, dataNascimento, senha) VALUES (:n, :e, :c, :t, :d, :s)");
+            $sql = $this->pdo->prepare("INSERT INTO usuario (nome, email,cpf, telefone, dataNascimento, senha, pergunta_secreta, resposta_secreta) VALUES (:n, :e, :c, :t, :d, :s, :p, :r)");
             $sql->bindValue(":n", $nome);
             $sql->bindValue(":e", $email);
             $sql->bindValue(":c", $cpf);
             $sql->bindValue(":t", $telefone);
             $sql->bindValue(":d", $dataNascimento);
             $sql->bindValue(":s", sha1($senha));
+            $sql->bindValue(':p',$perguntaSecreta);
+            $sql->bindValue(':r',$respostaSecreta);
             $sql->execute();
             return true;
         }
@@ -56,6 +58,22 @@ class Usuario
             return false;
         }
     }
+
+    public function recuperarConta($email, $respostaSecreta)
+    {
+
+        $sql = $this->pdo->prepare("SELECT id_usuario FROM usuario WHERE email = :e AND resposta_secreta = :r");
+        $sql->bindValue(":e", $email);
+        $sql->bindValue(":r", $respostaSecreta);
+        $sql->execute();
+        if ($sql->rowCount() > 0) {
+            $dado = $sql->fetch();
+            return $dado['id_usuario']; // Retorna o ID do usuário
+    } else {
+        return false; // Retorna false se não encontrar
+    }
+    }
+
     public function buscarDados()
     {
         $res = array();
@@ -74,5 +92,11 @@ class Usuario
     {
         $stmt = $this->pdo->prepare("UPDATE usuario SET nome = :nome, email = :email, cpf = :cpf, telefone = :telefone, dataNascimento = :dataNascimento WHERE id_usuario = :id");
         return $stmt->execute([':nome' => $nome, ':email' => $email, ':cpf' => $cpf, ':telefone' => $telefone, ':dataNascimento' => $dataNascimento,':id' => $id_usuario]);
+    }
+
+    public function alterarSenha($id_usuario, $senhaCriptografada) {
+        $senhaCriptografada = sha1($senhaCriptografada);
+        $stmt = $this->pdo->prepare("UPDATE usuario SET senha = :senha Where id_usuario = :id");
+        return $stmt->execute([':senha' => $senhaCriptografada, ':id' => $id_usuario]);
     }
 }

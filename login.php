@@ -40,6 +40,7 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!")
             <div>
               <label class="input-label-password">Senha</label>
               <input type="password" class="senha" id="data-password" name="senha">
+              <div class="novo-usuario"><a href="recuperar-senha.php">Esqueci minha senha</a>
             </div>
           </div>
           <button type="submit" name="envio" class="button-default">Continuar</button>

@@ -30,7 +30,7 @@ $p = new produto();
         <img src="assets/images/icon-feather-user.svg" alt="" />
         <span>
           Olá, <br />
-          Lorem Ipsum
+         Lorem
         </span>
         <img src="assets/images/arrow-down.svg" alt="" />
         <div class="menu-drop">
