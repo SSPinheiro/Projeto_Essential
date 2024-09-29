@@ -15,7 +15,7 @@ $p = new produto();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerenciamento de produto</title>
+  <title>Relatorio de Estoque</title>
   <link rel="stylesheet" href="./assets/css/reset.css">
   <link rel="stylesheet" href="./assets/css/styles.css">
   <link rel="stylesheet" href="./assets/css/gerenciamento_produto.css">
@@ -55,9 +55,8 @@ $p = new produto();
       <div class="d-flex justify-content-between">
         <a href="index.php" class="link-voltar">
           <img src="assets/images/arrow.svg" alt="">
-          <span>Gerenciamento de produto</span>
+          <span>Relatorio de estoque</span>
         </a>
-        <a href="cadastro-produto.php" class="bt-add">Adicionar novo produto</a>
       </div>
       <div class="shadow-table">
         <table>
@@ -68,9 +67,7 @@ $p = new produto();
               <th>Nome</th>
               <th>SKU</th>
               <th>Descrição</th>
-              <th>Valor</th>
               <th>Quantidade</th>
-              <th>Botões</th>
             </tr>
           </thead>
           <tbody>
@@ -89,14 +86,9 @@ $p = new produto();
                 <span>" . htmlspecialchars($produto['nome']) . "</span>
               </td>";
                 echo "<td>" . $produto['sku'] . "</td>";
-                echo "<td>" . $produto['descricao'] . "</td>";
-                echo "<td>" . $produto['valor'] . "</td>";
+                echo "<td>" . $produto['descricao'] . "</td>";  
                 echo "<td>" . $produto['quantidade'] . "</td>";
             ?>
-                <td>
-                  <a href="editar-produto.php?id_produto=<?php echo $produto['id_produto']; ?>">Editar</a>
-                  <a href="delete-produto.php?id_produto=<?php echo $produto['id_produto']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");'>Excluir</a>
-                </td>
             <?php
                 echo "</tr>";
               }
