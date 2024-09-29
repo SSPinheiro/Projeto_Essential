@@ -16,11 +16,7 @@ if (isset($_GET['id_usuario'])) {
 
 
     if ($usuario = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $nome = $usuario['nome'];
-        $email = $usuario['email'];
-        $cpf = $usuario['cpf'];
-        $telefone = $usuario['telefone'];
-        $dataNascimento = $usuario['dataNascimento'];
+        $nome = $usuario['senha'];
     } else {
         echo "<h5>Usuário não encontrado</h5>";
         exit();
@@ -63,7 +59,7 @@ if (isset($_GET['id_usuario'])) {
                     <a href="cadastro-usuario.php">Cadastrar usuário</a>
                     <a href="cadastro-produto.php">Cadastrar produto</a>
                     <a href="novo-pedido.php">Novo pedido</a>
-                    <a href="alterar-senha.php?id_usuario=<?php echo $_SESSION['id_usuario']; ?>">Alterar senha</a>
+                    <a href="alterar-senha.php">Alterar senha</a>
                     <a href="logout.php">Sair da conta</a>
                 </div>
             </div>
@@ -81,25 +77,8 @@ if (isset($_GET['id_usuario'])) {
                 <form method="post" id="form-cadastro-cliente">
                     <div class="bloco-inputs">
                         <div>
-                            <label class="input-label">Nome</label>
-                            <input type="text" class="nome-input" name="nome" value="<?php echo htmlspecialchars($nome); ?>" required maxlength="255">
-                        </div>
-                        <div>
-                            <label class="input-label">E-mail</label>
-                            <input type="text" class="email-input" name="email" value="<?php echo htmlspecialchars($email); ?>"
-                                required maxlength="255">
-                        </div>
-                        <div>
-                            <label class="input-label">CPF</label>
-                            <input type="text" class="cpf-input" name="cpf" value="<?php echo htmlspecialchars($cpf); ?>" required maxlength="11">
-                        </div>
-                        <div>
-                            <label class="input-label">Telefone</label>
-                            <input type="tel" class="telefone-input" name="telefone" value="<?php echo htmlspecialchars($telefone); ?>" required maxlength="15">
-                        </div>
-                        <div>
-                            <label class="input-label">Data Nascimento</label>
-                            <input type="date" class="data-input" name="dataNascimento" value="<?php echo htmlspecialchars($dataNascimento); ?>" required maxlength="15">
+                            <label class="input-label">Senha</label>
+                            <input type="password" class="password-input" name="senha" value="" required maxlength="255">
                         </div>
                     </div>
                     <button type="submit" class="button-default" name="envio">Salvar alterações</button>
@@ -109,15 +88,11 @@ if (isset($_GET['id_usuario'])) {
     </section>
     <?php
       if(isset($_POST['envio'])) {
-        $nome = addslashes($_POST['nome']);
-        $email = addslashes($_POST['email']);
-        $cpf = addslashes($_POST['cpf']);
-        $telefone = addslashes($_POST['telefone']);
-        $dataNascimento = addslashes($_POST['dataNascimento']);
+        $senha = addslashes($_POST['senha']);
 
         // Aqui você deve atualizar o usuario no banco de dados
-        if ($u->atualizarUsuario($usuario_id, $nome, $email, $cpf, $telefone, $dataNascimento)) {
-            header('location: gerenciamento-usuario.php');
+        if ($u->alterarSenha($usuario_id, $senha)) {
+            echo "Senha atualizada com sucesso";
         } else {
             echo "Erro ao atualizar Usuario.";
         }

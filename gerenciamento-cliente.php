@@ -42,6 +42,7 @@ $c = new cliente("essentia", "localhost", "root", "Unida010!");
           <a href="cadastro-usuario.php">Cadastrar usuário</a>
           <a href="cadastro-produto.php">Cadastrar produto</a>
           <a href="novo-pedido.php">Novo pedido</a>
+          <a href="alterar-senha.php?id_usuario=<?php echo $_SESSION['id_usuario']; ?>">Alterar senha</a>
           <a href="logout.php">Sair da conta</a>
         </div>
       </div>
