@@ -11,9 +11,8 @@ $p = new Produto();
 
 if (isset($_GET['id_produto'])) {
     $produto_id = $_GET['id_produto'];
-    $stmt = $p->prepare("SELECT * FROM produto Where id_produto = :id");
+    $stmt = $p->prepare("SELECT * FROM produto WHERE id_produto = :id");
     $stmt->execute([':id' => $produto_id]);
-
 
     if ($produto = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $caminho = $produto['caminho'];
@@ -60,13 +59,13 @@ if (isset($_GET['id_produto'])) {
         <div class="menu-drop">
           <a href="gerenciamento-cliente.php">Gerenciar clientes</a>
           <a href="gerenciamento-produto.php">Gerenciar produtos</a>
-          <a href="gerenciamento-usuario.php">Gerenciar usuarios</a>
+          <a href="gerenciamento-usuario.php">Gerenciar usuários</a>
           <a href="cadastro-cliente.php">Cadastrar cliente</a>
           <a href="cadastro-usuario.php">Cadastrar usuário</a>
           <a href="cadastro-produto.php">Cadastrar produto</a>
           <a href="novo-pedido.php">Novo pedido</a>
           <a href="alterar-senha.php?id_usuario=<?php echo $_SESSION['id_usuario']; ?>">Alterar senha</a>
-          <a href="relatorio-estoque.php">Relatorio de estoque</a>
+          <a href="relatorio-estoque.php">Relatório de estoque</a>
           <a href="logout.php">Sair da conta</a>
         </div>
       </div>
@@ -75,9 +74,9 @@ if (isset($_GET['id_produto'])) {
   <section class="page-cadastro-produto paddingBottom50">
     <div class="container">
       <div>
-        <a href="cadastro-produto.php" class="link-voltar">
+        <a href="gerenciamento-produto.php" class="link-voltar">
           <img src="assets/images/arrow.svg" alt="">
-          <span>Cadastro de produto</span>
+          <span>Editar produto</span>
         </a>
       </div>
       <div class="container-small">
@@ -85,7 +84,7 @@ if (isset($_GET['id_produto'])) {
           <div class="bloco-inputs">
             <div>
               <label class="input-label">Nome</label>
-              <input type="text" class="nome-input" name="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" required>
+              <input type="text" class="nome-input" name="nome" value="<?php echo htmlspecialchars($nome); ?>" required>
             </div>
             <div>
               <label class="input-label">Descrição</label>
@@ -94,20 +93,20 @@ if (isset($_GET['id_produto'])) {
             <div class="flex-2">
               <div>
                 <label class="input-label">SKU</label>
-                <input type="text" class="sku-input" name="sku" name="nome" value="<?php echo htmlspecialchars($sku); ?>" required>
+                <input type="text" class="sku-input" name="sku" value="<?php echo htmlspecialchars($sku); ?>" required>
               </div>
               <div>
                 <label class="input-label">Valor</label>
-                <input type="text" class="valor-input" name="valor" name="nome" value="<?php echo htmlspecialchars($valor); ?>" required>
+                <input type="text" class="valor-input" name="valor" value="<?php echo htmlspecialchars($valor); ?>" required>
               </div>
               <div>
                 <label class="input-label">Quantidade</label>
-                <input type="text" class="valor-input" name="quantidade" name="nome" value="<?php echo htmlspecialchars($quantidade); ?>" required>
+                <input type="text" class="valor-input quantidade-input" name="quantidade" value="<?php echo htmlspecialchars($quantidade); ?>" required>
               </div>
             </div>
             <div>
               <label class="bt-arquivo" for="bt-arquivo">Alterar imagem</label>
-              <input id="bt-arquivo" type="file" name="imagem" required>
+              <input id="bt-arquivo" type="file" name="imagem">
             </div>
           </div>
           <button type="submit" class="button-default" name="envio">Editar produto</button>
@@ -115,8 +114,26 @@ if (isset($_GET['id_produto'])) {
       </div>
     </div>
   </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const skuInput = document.querySelector('.sku-input');
+      const valorInput = document.querySelector('.valor-input');
+      const quantidadeInput = document.querySelector('.quantidade-input');
+
+      const validateNumberInput = (input) => {
+        input.addEventListener('input', function() {
+          this.value = this.value.replace(/[^0-9]/g, ''); // Permitir apenas números
+        });
+      };
+
+      validateNumberInput(skuInput);
+      validateNumberInput(valorInput);
+      validateNumberInput(quantidadeInput);
+    });
+  </script>
+
   <?php
-  // Verifica se o formulário foi enviado
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nome = $_POST['nome'];
     $sku = $_POST['sku'];
@@ -124,26 +141,31 @@ if (isset($_GET['id_produto'])) {
     $quantidade = $_POST['quantidade'];
     $descricao = $_POST['descricao'];
 
-    // Se uma nova imagem foi enviada, processa o upload
-    if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
-        $caminho = 'uploads/' . basename($_FILES['imagem']['name']);
-        if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminho)) {
-            // Atualiza o produto com nova imagem
-            if ($p->atualizarProduto($produto_id, $nome, $sku, $valor, $quantidade, $descricao, $caminho)) {
-                echo "Produto atualizado com sucesso!";
+    if (!empty($nome) && !empty($sku) && !empty($valor) && !empty($quantidade) && !empty($descricao)) {
+      if (ctype_digit($sku) && is_numeric($valor) && ctype_digit($quantidade)) {
+        $caminhoImagem = $caminho; // Manter a imagem atual por padrão
+
+        // Se uma nova imagem foi enviada, processa o upload
+        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
+            $caminhoImagem = 'uploads/' . basename($_FILES['imagem']['name']);
+            if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminhoImagem)) {
+                // A nova imagem foi carregada com sucesso
             } else {
-                echo "Erro ao atualizar o produto.";
+                echo "Erro ao mover o arquivo da nova imagem.";
             }
-        } else {
-            echo "Erro ao mover o arquivo.";
         }
-    } else {
-        // Atualiza o produto sem mudar a imagem
-        if ($p->atualizarProduto($produto_id, $nome, $sku, $valor, $quantidade, $descricao, $caminho)) {
+
+        // Atualiza o produto
+        if ($p->atualizarProduto($produto_id, $nome, $sku, $valor, $quantidade, $descricao, $caminhoImagem)) {
             echo "Produto atualizado com sucesso!";
         } else {
             echo "Erro ao atualizar o produto.";
         }
+      } else {
+        echo "SKU e quantidade devem ser números inteiros e valor deve ser numérico.";
+      }
+    } else {
+      echo "Por favor, preencha todos os campos.";
     }
   }
   ?>

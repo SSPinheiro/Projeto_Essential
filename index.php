@@ -60,7 +60,7 @@ $pe = new Pedido;
           <div class="d-flex justify-content-between">
             <div>
               <h2>Clientes</h2>
-              <span><?php echo $p->contarProdutos()?></span>
+              <span><?php echo $c->contarClientes()?></span>
             </div>
             <img src="assets/images/icon-users.svg" alt="">
           </div>
@@ -70,7 +70,7 @@ $pe = new Pedido;
           <div class="d-flex justify-content-between">
             <div>
               <h2>Produtos</h2>
-              <span><?php echo $c->contarClientes()?></span>
+              <span><?php echo $p->contarProdutos()?></span>
             </div>
             <img src="assets/images/icon-product.svg" style="max-width: 76px;" alt="">
           </div>

@@ -88,14 +88,14 @@ $p = new produto();
               echo "<td>
                 <span>" . htmlspecialchars($produto['nome']) . "</span>
               </td>";
-                echo "<td>" . $produto['sku'] . "</td>";
+              echo "<td>" . $produto['sku'] . "</td>";
                 echo "<td>" . $produto['descricao'] . "</td>";
-                echo "<td>" . $produto['valor'] . "</td>";
+                echo "<td>" . "R$ " . number_format($produto['valor'], 2, ',', '.') . "</td>"; 
                 echo "<td>" . $produto['quantidade'] . "</td>";
             ?>
                 <td>
-                  <a href="editar-produto.php?id_produto=<?php echo $produto['id_produto']; ?>">Editar</a>
-                  <a href="delete-produto.php?id_produto=<?php echo $produto['id_produto']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");'>Excluir</a>
+                  <a href="editar-produto.php?id_produto=<?php echo $produto['id_produto']; ?>" class="button-default-roxo">Editar</a>
+                  <a href="delete-produto.php?id_produto=<?php echo $produto['id_produto']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");'class="button-default-red">Excluir</a>
                 </td>
             <?php
                 echo "</tr>";

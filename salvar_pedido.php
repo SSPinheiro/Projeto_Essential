@@ -28,7 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $clienteExiste = $stmt->fetchColumn();
 
         if (!$clienteExiste) {
-            die("Cliente não encontrado.");
+            $_SESSION['mensagem'] = "Cliente não encontrado.";
+            header('Location: novo-pedido.php');
+            exit();
         }
 
         // Inserir o pedido na tabela de pedidos
@@ -68,11 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt_atualiza->execute();
             }
 
-            echo "Pedido salvo com sucesso!";
+            $_SESSION['mensagem'] = "Pedido salvo com sucesso!";
+            header('Location: novo-pedido.php');
+            exit();
         } else {
-            echo "Erro ao salvar o pedido.";
+            $_SESSION['mensagem'] = "Erro ao salvar o pedido.";
+            header('Location: novo-pedido.php');
+            exit();
         }
     } catch (PDOException $e) {
-        echo "Erro: " . $e->getMessage();
+        $_SESSION['mensagem'] = "Erro: " . $e->getMessage();
+        header('Location: novo-pedido.php');
+        exit();
     }
 }

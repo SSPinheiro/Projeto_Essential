@@ -1,18 +1,22 @@
 <?php
 session_start();
-if(!isset($_SESSION['id_usuario'])){
-  header('location: login.php');
-  exit();
-} 
-require_once('classes/cliente.php');
-$u = new Cliente("essentia", "localhost", "root", "Unida010!");
+require_once 'classes/usuario.php';
+$u = new Usuario("essentia", "localhost", "root", "Unida010!");
+$perguntas = [
+  "Qual é o nome do seu primeiro animal de estimação?",
+  "Qual é a sua cidade natal?",
+  "Qual é o nome da sua escola primária?",
+  "Qual é o seu anime favorito?",
+];
 
 $generalMessage = ""; 
 $emailMessage = ""; 
+$senhaMessage = ""; 
 $cpfMessage = ""; 
 $campoVazioMessage = ""; 
 
-function validarCPF($cpf) {
+function validarCPF($cpf)
+{
   $cpf = preg_replace('/[^0-9]/', '', $cpf);
   if (strlen($cpf) != 11 || preg_match('/^(\d)\1{10}$/', $cpf)) {
     return false;
@@ -40,23 +44,41 @@ if (isset($_POST['envio'])) {
   $email = $_POST['email'];
   $cpf = $_POST['cpf'];
   $telefone = $_POST['telefone'];
+  $dataNascimento = $_POST['data-nascimento'];
+  $senha = $_POST['senha'];
+  $perguntaSecreta = $_POST['pergunta-secreta'];
+  $respostaSecreta = $_POST['resposta-secreta'];
 
-  
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $emailMessage = "Email inválido!";
   }
-  
+
+  elseif (strlen($senha) < 6) {
+    $senhaMessage = "A senha deve ter pelo menos 6 caracteres!";
+  }
+
   elseif (!validarCPF($cpf)) {
     $cpfMessage = "CPF inválido! Verifique se está correto.";
   }
-  
-  elseif (empty($nome) || empty($email) || empty($cpf) || empty($telefone)) {
+
+  elseif (empty($nome) || empty($email) || empty($cpf) || empty($telefone) || empty($dataNascimento) || empty($senha) || empty($perguntaSecreta) || empty($respostaSecreta)) {
     $campoVazioMessage = "Preencha todos os campos!";
   } else {
-    if ($u->cadastrar($nome, $email, $cpf, $telefone)) {
-      $generalMessage = "<div class='alert success'>Cadastrado com sucesso!</div>";
+ 
+    $dataAtual = new DateTime();
+    $dataNascimentoDate = new DateTime($dataNascimento);
+    $idade = $dataAtual->diff($dataNascimentoDate)->y;
+
+    if ($dataNascimentoDate > $dataAtual) {
+      $generalMessage = "<div class='alert error'>Data de nascimento não pode ser no futuro!</div>";
+    } elseif ($idade < 18 || $idade > 120) {
+      $generalMessage = "<div class='alert error'>A idade deve ser entre 18 e 120 anos!</div>";
     } else {
-      $generalMessage = "<div class='alert error'>Email já cadastrado!</div>";
+      if ($u->cadastrar($nome, $email, $cpf, $telefone, $dataNascimento, $senha, $perguntaSecreta, $respostaSecreta)) {
+        $generalMessage = "<div class='alert success'>Cadastrado com sucesso, acesse para entrar!</div>";
+      } else {
+        $generalMessage = "<div class='alert error'>" . $u->msgErro . "</div>";
+      }
     }
   }
 }
@@ -67,7 +89,7 @@ if (isset($_POST['envio'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro de cliente</title>
+  <title>Cadastro de usuário</title>
   <link rel="stylesheet" href="./assets/css/reset.css">
   <link rel="stylesheet" href="./assets/css/styles.css">
   <link rel="stylesheet" href="https://use.typekit.net/tvf0cut.css">
@@ -78,7 +100,7 @@ if (isset($_POST['envio'])) {
       $('#telefone').mask('(00) 00000-0000');
       $('#cpf').mask('000.000.000-00');
 
-  
+      
       $('.nome-input').on('keypress', function(e) {
         const charCode = (typeof e.which === "undefined") ? e.keyCode : e.which;
         if (charCode >= 48 && charCode <= 57) {
@@ -86,8 +108,8 @@ if (isset($_POST['envio'])) {
         }
       });
 
-      $('#form-cadastro-cliente').on('submit', function(e) {
-  
+      $('#form-cadastro-usuario').on('submit', function(e) {
+      
         const email = $('#email').val();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -96,8 +118,8 @@ if (isset($_POST['envio'])) {
           return;
         }
 
-  
-        const cpf = $('#cpf').val().replace(/\D/g, '');
+      
+        const cpf = $('#cpf').val().replace(/\D/g, ''); 
         if (!validarCPF(cpf)) {
           alert("CPF inválido!");
           e.preventDefault();
@@ -135,44 +157,21 @@ if (isset($_POST['envio'])) {
       <a href="index.php" class="logo">
         <img src="assets/images/ho.svg" alt="" />
       </a>
-      <div class="blc-user">
-        <img src="assets/images/icon-feather-user.svg" alt="" />
-        <span>
-          Olá, <br />
-          Lorem Ipsum
-        </span>
-        <img src="assets/images/arrow-down.svg" alt="" />
-        <div class="menu-drop">
-          <a href="gerenciamento-cliente.php">Gerenciar clientes</a>
-          <a href="gerenciamento-produto.php">Gerenciar produtos</a>
-          <a href="gerenciamento-usuario.php">Gerenciar usuarios</a>
-          <a href="cadastro-cliente.php">Cadastrar cliente</a>
-          <a href="cadastro-usuario.php">Cadastrar usuário</a>
-          <a href="cadastro-produto.php">Cadastrar produto</a>
-          <a href="novo-pedido.php">Novo pedido</a>
-          <a href="alterar-senha.php?id_usuario=<?php echo $_SESSION['id_usuario']; ?>">Alterar senha</a>
-          <a href="relatorio-estoque.php">Relatório de estoque</a>
-          <a href="logout.php">Sair da conta</a>
-        </div>
-      </div>
     </div>
   </header>
-  <section class="page-cadastro-cliente paddingBottom50">
+  <section class="page-cadastro-usuario paddingBottom50">
     <div class="container">
       <div>
-        <a href="cadastro-cliente.php" class="link-voltar">
+        <a href="cadastro-usuario.php" class="link-voltar">
           <img src="assets/images/arrow.svg" alt="">
-          <span>Cadastro de cliente</span>
+          <span>Cadastro de usuário</span>
         </a>
       </div>
       <div class="container-small">
         <div>
           <?php echo $generalMessage; ?>
-          <p class="error-message"><?php echo $emailMessage; ?></p>
-          <p class="error-message"><?php echo $cpfMessage; ?></p>
-          <p class="error-message"><?php echo $campoVazioMessage; ?></p>
         </div>
-        <form method="post" id="form-cadastro-cliente">
+        <form method="post" id="form-cadastro-usuario">
           <div class="bloco-inputs">
             <div>
               <label class="input-label">Nome</label>
@@ -181,20 +180,44 @@ if (isset($_POST['envio'])) {
             <div>
               <label class="input-label">E-mail</label>
               <input type="text" class="email-input" id="email" name="email" required maxlength="255">
+              <p class="error-message"><?php echo $emailMessage; ?></p>
             </div>
             <div>
               <label class="input-label">CPF</label>
               <input type="text" class="cpf-input" id="cpf" name="cpf" required maxlength="14">
+              <p class="error-message"><?php echo $cpfMessage; ?></p>
             </div>
             <div>
               <label class="input-label">Telefone</label>
               <input type="tel" class="telefone-input" id="telefone" name="telefone" required maxlength="15">
             </div>
+            <div>
+              <label class="input-label">Data de Nascimento</label>
+              <input type="date" class="date-nascimento" name="data-nascimento" required>
+            </div>
+            <div>
+              <label class="input-label">Senha</label>
+              <input type="password" class="senha-input" id="senha" name="senha" required maxlength="40">
+              <p class="error-message"><?php echo $senhaMessage; ?></p>
+            </div>
+            <div>
+              <label class="input-label" for="pergunta-secreta">Pergunta Secreta</label>
+              <select id="pergunta-secreta" name="pergunta-secreta" required>
+                <?php foreach ($perguntas as $pergunta): ?>
+                  <option value="<?php echo htmlspecialchars($pergunta); ?>"><?php echo htmlspecialchars($pergunta); ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div>
+              <label for="resposta-secreta">Resposta</label>
+              <input type="text" id="resposta-secreta" name="resposta-secreta" required>
+            </div>
           </div>
-          <button type="submit" class="button-default" name="envio">Salvar novo cliente</button>
+          <button type="submit" name="envio" class="button-default">Salvar novo usuário</button>
         </form>
       </div>
     </div>
   </section>
 </body>
+
 </html>

@@ -44,7 +44,7 @@ $u = new Usuario("essentia", "localhost", "root", "Unida010!")
             </div>
           </div>
           <button type="submit" name="envio" class="button-default">Continuar</button>
-          <div class="novo-usuario"><p>Precisa de uma conta? <a href="cadastro-usuario.php">Ainda não sou cadastrado</a></p></div>
+          <div class="novo-usuario"><p>Precisa de uma conta? <a href="cadastro_usuario.php">Ainda não sou cadastrado</a></p></div>
         </form>
       </div>
     </div>

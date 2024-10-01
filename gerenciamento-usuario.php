@@ -82,11 +82,13 @@ $u = new usuario("essentia", "localhost", "root", "Unida010!");
                 echo "<td>" . $usuario['email'] . "</td>";
                 echo "<td>" . $usuario['cpf'] . "</td>";
                 echo "<td>" . $usuario['telefone'] . "</td>";
-                echo "<td>" . $usuario['dataNascimento'] . "</td>";
+                $dataNascimento = new DateTime($usuario['dataNascimento']);
+                echo "<td>" . $dataNascimento->format('d/m/Y') . "</td>";
+
             ?>
                 <td>
-                  <a href="editar-usuario.php?id_usuario=<?php echo $usuario['id_usuario']; ?>">Editar</a>
-                  <a href="delete-usuario.php?id_usuario=<?php echo $usuario['id_usuario']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");'>Excluir</a>
+                  <a href="editar-usuario.php?id_usuario=<?php echo $usuario['id_usuario']; ?>" class="button-default-roxo">Editar</a>
+                  <a href="delete-usuario.php?id_usuario=<?php echo $usuario['id_usuario']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");' class="button-default-red">Excluir</a>
                 </td>
             <?php
                 echo "</tr>";

@@ -71,29 +71,30 @@ $c = new cliente("essentia", "localhost", "root", "Unida010!");
             </tr>
           </thead>
           <tbody>
-            <?php
-            $dados = $c->buscarDados();
-            if (count($dados) > 0) {
-              foreach ($dados as $cliente) {
-                echo "<tr>";
-                echo "<td>" . $cliente['id_cliente'] . "</td>";
-                echo "<td>" . $cliente['nome'] . "</td>";
-                echo "<td>" . $cliente['cpf'] . "</td>";
-                echo "<td>" . $cliente['email'] . "</td>";
-                echo "<td>" . $cliente['telefone'] . "</td>";
-            ?>
-                <td>
-                  <a href="editar-cliente.php?id_cliente=<?php echo $cliente['id_cliente']; ?>">Editar</a>
-                  <a href="delete-cliente.php?id_cliente=<?php echo $cliente['id_cliente']; ?>" onclick='return confirm("Tem certeza que deseja excluir este registro?");'>Excluir</a>
-                </td>
-            <?php
-                echo "</tr>";
-              }
-            } else {
-              echo "<tr><td colspan='6'>Ainda não existem clientes cadastradas!</td></tr>";
-            }
-            ?>
-          </tbody>
+  <?php
+  $dados = $c->buscarDados();
+  if (count($dados) > 0) {
+    foreach ($dados as $cliente) {
+      echo "<tr>";
+      echo "<td>" . $cliente['id_cliente'] . "</td>";
+      echo "<td>" . $cliente['nome'] . "</td>";
+      echo "<td>" . $cliente['cpf'] . "</td>";
+      echo "<td>" . $cliente['email'] . "</td>";
+      echo "<td>" . $cliente['telefone'] . "</td>";
+  ?>
+      <td>
+        <a href="editar-cliente.php?id_cliente=<?php echo $cliente['id_cliente']; ?>" class="button-default-roxo">Editar</a>
+        <a href="delete-cliente.php?id_cliente=<?php echo $cliente['id_cliente']; ?>" class="button-default-red" onclick='return confirm("Tem certeza que deseja excluir este registro?");'>Excluir</a>
+      </td>
+  <?php
+      echo "</tr>";
+    }
+  } else {
+    echo "<tr><td colspan='6'>Ainda não existem clientes cadastradas!</td></tr>";
+  }
+  ?>
+</tbody>
+
         </table>
       </div>
     </div>

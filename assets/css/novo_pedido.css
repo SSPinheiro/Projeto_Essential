@@ -44,3 +44,12 @@ a.bt-add-produto {
     display: flex;
     gap: 15px;
 }
+
+.mensagem {
+    background-color: #d4edda; /* Fundo verde claro */
+    color: #155724; /* Texto verde escuro */
+    border: 1px solid #c3e6cb; /* Borda verde */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}

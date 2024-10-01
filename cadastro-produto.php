@@ -30,7 +30,7 @@ $p = new produto();
         <img src="assets/images/icon-feather-user.svg" alt="" />
         <span>
           Olá, <br />
-         Lorem
+          Lorem
         </span>
         <img src="assets/images/arrow-down.svg" alt="" />
         <div class="menu-drop">
@@ -78,7 +78,7 @@ $p = new produto();
               </div>
               <div>
                 <label class="input-label">Quantidade</label>
-                <input type="text" class="valor-input" name="quantidade" required>
+                <input type="text" class="valor-input quantidade-input" name="quantidade" required>
               </div>
             </div>
             <div>
@@ -91,27 +91,55 @@ $p = new produto();
       </div>
     </div>
   </section>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const skuInput = document.querySelector('.sku-input');
+      const valorInput = document.querySelector('.valor-input');
+      const quantidadeInput = document.querySelector('.quantidade-input');
+
+      const validateNumberInput = (input) => {
+        input.addEventListener('input', function() {
+          this.value = this.value.replace(/[^0-9]/g, ''); 
+        });
+      };
+
+      validateNumberInput(skuInput);
+      validateNumberInput(valorInput);
+      validateNumberInput(quantidadeInput);
+    });
+  </script>
+
   <?php
-  // Verifica se o formulário foi enviado
+
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!empty($_POST['nome']) && !empty($_POST['sku']) && !empty($_POST['valor']) && !empty($_POST['quantidade']) && !empty($_POST['descricao'])) {
+    $nome = $_POST['nome'];
+    $sku = $_POST['sku'];
+    $valor = $_POST['valor'];
+    $quantidade = $_POST['quantidade'];
+    $descricao = $_POST['descricao'];
 
-      if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
-        $caminho = 'uploads/' . basename($_FILES['imagem']['name']);
+    if (!empty($nome) && !empty($sku) && !empty($valor) && !empty($quantidade) && !empty($descricao)) {
+      if (ctype_digit($sku) && is_numeric($valor) && ctype_digit($quantidade)) {
+        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
+          $caminho = 'uploads/' . basename($_FILES['imagem']['name']);
 
-        // Move o arquivo para a pasta desejada
-        if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminho)) {
-          // Insere os dados no banco de dados
-          if ($p->insertProduto($_POST['nome'], $_POST['sku'], $_POST['valor'], $_POST['quantidade'], $_POST['descricao'], $caminho)) {
-            echo "Produto carregado e dados salvos com sucesso!";
+
+          if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminho)) {
+
+            if ($p->insertProduto($nome, $sku, $valor, $quantidade, $descricao, $caminho)) {
+              echo "Produto carregado e dados salvos com sucesso!";
+            } else {
+              echo "Erro ao salvar o produto.";
+            }
           } else {
-            echo "Erro ao salvar o produto.";
+            echo "Erro ao mover o arquivo.";
           }
         } else {
-          echo "Erro ao mover o arquivo.";
+          echo "Erro no upload da imagem.";
         }
       } else {
-        echo "Erro no upload da imagem.";
+        echo "SKU e quantidade devem ser números inteiros e valor deve ser numérico.";
       }
     }
   }
